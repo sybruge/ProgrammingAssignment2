@@ -1,35 +1,37 @@
 ## This function creates a "cache matrix" which is a list of 4 functions
-## set : set the value of the matrix
-## get : get the value of the matrix
-## setsolve : set the value of the inverse matrix of the matrix
-## getsolve : get the value of the inverse matrix of the matrix
 
 makeCacheMatrix <- function(x = matrix()) {
             m <- NULL
+            ## function set : set the value of the matrix
             set <- function(y) {
                     x <<- y
                     m <<- NULL
             }
+            ## function get : get the value of the matrix
             get <- function() x
-            setsolve <- function(solve) m <<- solve(x)
-            getsolve <- function() m
+            ## function setinverse : set the value of the inverse matrix
+            setinverse <- function(inverse) m <<- inverse
+            ## function getinverse : get the value of the inverse matrix
+            getinverse <- function() m
             list(set = set, get = get,
-                 setsolve = setsolve,
-                 getsolve = getsolve)
+                 setinverse = setinverse,
+                 getinverse = getinverse)
 }
 
 ## This function calculate the inverse matrix of the "cache matrix" above
-## If the inverse matrix has been already calculated, then it returns if directly
-## Otherwise, it calculates the inverse matrix and sets the value of the inverse matrix
-## in the "cache"
+## It only calculates if it has not been calculate yet
+
 cacheSolve <- function(x, ...) {
-            m <- x$getsolve()
+			# get the inverse matrix in the cache
+            m <- x$getinverse()
+            # If the inverse matrix has been already calculated, then it returns if directly
             if(!is.null(m)) {
                     message("getting cached data")
                     return(m)
             }
+			# Otherwise, it calculates the inverse matrix and sets the value of the inverse matrix in the cache
             data <- x$get()
             m <- solve(data, ...)
-            x$setsolve(m)
+            x$setinverse(m)
             m
 }
